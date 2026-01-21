@@ -1455,18 +1455,25 @@ void ClientUserinfoChanged( int clientNum ) {
 		// To communicate it to cgame
 		client->ps.stats[ STAT_PLAYER_CLASS ] = client->sess.playerType;
 
-		if ( client->sess.sessionTeam == TEAM_BLUE ) {
-			Q_strncpyz( model, MULTIPLAYER_ALLIEDMODEL, MAX_QPATH );
-		} else {
-			Q_strncpyz( model, MULTIPLAYER_AXISMODEL, MAX_QPATH );
+		// QuakeNite: Use character model instead of hardcoded Wolf models
+		// The character system already set model/head in userinfo above,
+		// so we just need to read it back and apply the team skin
+		{
+			const char *skinName;
+			char qnModelPath[MAX_QPATH];
+
+			// Determine skin based on team
+			if ( client->sess.sessionTeam == TEAM_BLUE ) {
+				skinName = "blue";
+			} else {
+				skinName = "red";
+			}
+
+			// Build model path with team skin
+			BG_QN_BuildModelPath( client->sess.qnCharacterId, skinName, qnModelPath, sizeof( qnModelPath ) );
+			Q_strncpyz( model, qnModelPath, MAX_QPATH );
+			Q_strncpyz( head, qnModelPath, MAX_QPATH );
 		}
-
-		Q_strcat( model, MAX_QPATH, "/" );
-
-		SetWolfSkin( client, model );
-
-		Q_strncpyz( head, "", MAX_QPATH );
-		SetWolfSkin( client, head );
 	}
 
 	// strip the skin name
