@@ -148,11 +148,8 @@ Returns the model folder name (e.g., "chef")
 ==================
 */
 const char *BG_QN_GetCharacterModelName( int id ) {
-	const qnCharacterDef_t *def = BG_QN_GetCharacterDef( id );
-	if ( !def ) {
-		return "chef";  // fallback to first character
-	}
-	return def->modelName;
+	id = BG_QN_ClampCharacterId( id );
+	return qn_characters[id].modelName;
 }
 
 /*
@@ -163,11 +160,8 @@ Returns the display name (e.g., "Mister Chef")
 ==================
 */
 const char *BG_QN_GetCharacterDisplayName( int id ) {
-	const qnCharacterDef_t *def = BG_QN_GetCharacterDef( id );
-	if ( !def ) {
-		return "Mister Chef";
-	}
-	return def->displayName;
+	id = BG_QN_ClampCharacterId( id );
+	return qn_characters[id].displayName;
 }
 
 /*
@@ -178,11 +172,8 @@ Returns the short name for kill feed (e.g., "Chef")
 ==================
 */
 const char *BG_QN_GetCharacterShortName( int id ) {
-	const qnCharacterDef_t *def = BG_QN_GetCharacterDef( id );
-	if ( !def ) {
-		return "Chef";
-	}
-	return def->shortName;
+	id = BG_QN_ClampCharacterId( id );
+	return qn_characters[id].shortName;
 }
 
 /*
@@ -193,11 +184,8 @@ Returns the flavor text description
 ==================
 */
 const char *BG_QN_GetCharacterDescription( int id ) {
-	const qnCharacterDef_t *def = BG_QN_GetCharacterDef( id );
-	if ( !def ) {
-		return "";
-	}
-	return def->description;
+	id = BG_QN_ClampCharacterId( id );
+	return qn_characters[id].description;
 }
 
 /*

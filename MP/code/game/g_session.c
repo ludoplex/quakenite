@@ -89,6 +89,10 @@ void G_ReadSessionData( gclient_t *client ) {
 	var = va( "session%i", (int)(client - level.clients) );
 	trap_Cvar_VariableStringBuffer( var, s, sizeof( s ) );
 
+	// Initialize qnCharacterId to default before sscanf for backward compatibility
+	// with old session strings that don't have this field
+	client->sess.qnCharacterId = 0;
+
 	sscanf( s, "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",       // DHM - Nerve + QuakeNite
 			(int *)&client->sess.sessionTeam,
 			&client->sess.spectatorNum,
@@ -107,6 +111,9 @@ void G_ReadSessionData( gclient_t *client ) {
 			&client->sess.latchPlayerSkin,  // DHM - Nerve
 			&client->sess.qnCharacterId     // QuakeNite character
 			);
+
+	// Clamp character ID to valid range (handles both old sessions and invalid data)
+	client->sess.qnCharacterId = BG_QN_ClampCharacterId( client->sess.qnCharacterId );
 
 	// NERVE - SMF
 	if ( g_altStopwatchMode.integer ) {

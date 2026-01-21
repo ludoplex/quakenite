@@ -1388,6 +1388,9 @@ void ClientUserinfoChanged( int clientNum ) {
 		int qnCharId;
 		const char *skinName;
 		char qnModelPath[MAX_QPATH];
+		const char *currentModel;
+		const char *currentHead;
+		qboolean needsUpdate;
 
 		// Read qn_char from userinfo, or use server-forced character
 		if ( g_qn_forceCharacter.integer >= 0 && g_qn_forceCharacter.integer < QN_NUM_CHARACTERS ) {
@@ -1415,17 +1418,22 @@ void ClientUserinfoChanged( int clientNum ) {
 		// Build the model path: "<modelName>/<skinName>"
 		BG_QN_BuildModelPath( qnCharId, skinName, qnModelPath, sizeof( qnModelPath ) );
 
-		// Force the model and head in userinfo
-		Info_SetValueForKey( userinfo, "model", qnModelPath );
-		Info_SetValueForKey( userinfo, "head", qnModelPath );
+		// Only update userinfo if model/head actually differ (avoid re-entrancy)
+		currentModel = Info_ValueForKey( userinfo, "model" );
+		currentHead = Info_ValueForKey( userinfo, "head" );
+		needsUpdate = ( Q_stricmp( currentModel, qnModelPath ) != 0 ||
+		                Q_stricmp( currentHead, qnModelPath ) != 0 );
 
-		// Write back the modified userinfo
-		trap_SetUserinfo( clientNum, userinfo );
+		if ( needsUpdate ) {
+			Info_SetValueForKey( userinfo, "model", qnModelPath );
+			Info_SetValueForKey( userinfo, "head", qnModelPath );
+			trap_SetUserinfo( clientNum, userinfo );
 
-		if ( g_developer.integer ) {
-			G_Printf( "QuakeNite: Client %d (%s) using character %s (%s)\n",
-				clientNum, client->pers.netname,
-				BG_QN_GetCharacterDisplayName( qnCharId ), qnModelPath );
+			if ( g_developer.integer ) {
+				G_Printf( "QuakeNite: Client %d (%s) using character %s (%s)\n",
+					clientNum, client->pers.netname,
+					BG_QN_GetCharacterDisplayName( qnCharId ), qnModelPath );
+			}
 		}
 	}
 
