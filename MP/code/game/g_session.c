@@ -50,7 +50,7 @@ void G_WriteClientSessionData( gclient_t *client ) {
 	const char  *s;
 	const char  *var;
 
-	s = va( "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",       // DHM - Nerve
+	s = va( "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",       // DHM - Nerve + QuakeNite
 			client->sess.sessionTeam,
 			client->sess.spectatorNum,
 			client->sess.spectatorState,
@@ -65,7 +65,8 @@ void G_WriteClientSessionData( gclient_t *client ) {
 			client->sess.latchPlayerType,   // DHM - Nerve
 			client->sess.latchPlayerWeapon, // DHM - Nerve
 			client->sess.latchPlayerItem,   // DHM - Nerve
-			client->sess.latchPlayerSkin    // DHM - Nerve
+			client->sess.latchPlayerSkin,   // DHM - Nerve
+			client->sess.qnCharacterId      // QuakeNite character
 			);
 
 	var = va( "session%i", (int)(client - level.clients) );
@@ -88,7 +89,7 @@ void G_ReadSessionData( gclient_t *client ) {
 	var = va( "session%i", (int)(client - level.clients) );
 	trap_Cvar_VariableStringBuffer( var, s, sizeof( s ) );
 
-	sscanf( s, "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",       // DHM - Nerve
+	sscanf( s, "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",       // DHM - Nerve + QuakeNite
 			(int *)&client->sess.sessionTeam,
 			&client->sess.spectatorNum,
 			(int *)&client->sess.spectatorState,
@@ -103,7 +104,8 @@ void G_ReadSessionData( gclient_t *client ) {
 			&client->sess.latchPlayerType,  // DHM - Nerve
 			&client->sess.latchPlayerWeapon, // DHM - Nerve
 			&client->sess.latchPlayerItem,  // DHM - Nerve
-			&client->sess.latchPlayerSkin   // DHM - Nerve
+			&client->sess.latchPlayerSkin,  // DHM - Nerve
+			&client->sess.qnCharacterId     // QuakeNite character
 			);
 
 	// NERVE - SMF
@@ -206,6 +208,12 @@ void G_InitSessionData( gclient_t *client, char *userinfo ) {
 
 	sess->spawnObjectiveIndex = 0;
 	// dhm - end
+
+	// QuakeNite - initialize character from userinfo
+	{
+		const char *qnCharValue = Info_ValueForKey( userinfo, "qn_char" );
+		sess->qnCharacterId = BG_QN_ClampCharacterId( atoi( qnCharValue ) );
+	}
 
 	G_WriteClientSessionData( client );
 }

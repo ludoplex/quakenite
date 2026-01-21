@@ -32,6 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../qcommon/q_shared.h"
 #include "bg_public.h"
+#include "bg_qn_characters.h"
 #include "g_public.h"
 
 //==================================================================
@@ -463,6 +464,9 @@ typedef struct {
 	int latchPlayerWeapon;          // DHM - Nerve :: for GT_WOLF not archived
 	int latchPlayerItem;            // DHM - Nerve :: for GT_WOLF not archived
 	int latchPlayerSkin;            // DHM - Nerve :: for GT_WOLF not archived
+
+	// QuakeNite character system
+	int qnCharacterId;              // Selected character (0-8), see qnCharacterId_t
 } clientSession_t;
 
 //
@@ -1170,6 +1174,7 @@ extern vmCvar_t g_scriptDebug;
 extern vmCvar_t g_userAim;
 
 extern vmCvar_t g_forceModel;
+extern vmCvar_t g_developer;
 
 extern vmCvar_t g_mg42arc;
 
@@ -1204,6 +1209,9 @@ extern vmCvar_t g_antilag;
 extern vmCvar_t g_dbgRevive;
 
 extern vmCvar_t g_localTeamPref;
+
+// QuakeNite character system
+extern vmCvar_t g_qn_forceCharacter;
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) __attribute__((noreturn));

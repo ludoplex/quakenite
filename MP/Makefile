@@ -2541,6 +2541,7 @@ Q3CGOBJ_ = \
   $(B)/$(BASEGAME)/cgame/bg_animation.o \
   $(B)/$(BASEGAME)/cgame/bg_misc.o \
   $(B)/$(BASEGAME)/cgame/bg_pmove.o \
+  $(B)/$(BASEGAME)/cgame/bg_qn_characters.o \
   $(B)/$(BASEGAME)/cgame/bg_slidemove.o \
   $(B)/$(BASEGAME)/cgame/bg_lib.o \
   $(B)/$(BASEGAME)/cgame/cg_consolecmds.o \
@@ -2616,6 +2617,7 @@ Q3GOBJ_ = \
   $(B)/$(BASEGAME)/game/bg_animation.o \
   $(B)/$(BASEGAME)/game/bg_misc.o \
   $(B)/$(BASEGAME)/game/bg_pmove.o \
+  $(B)/$(BASEGAME)/game/bg_qn_characters.o \
   $(B)/$(BASEGAME)/game/bg_slidemove.o \
   $(B)/$(BASEGAME)/game/bg_lib.o \
   $(B)/$(BASEGAME)/game/g_active.o \
@@ -2675,6 +2677,7 @@ Q3UIOBJ_ = \
   $(B)/$(BASEGAME)/ui/ui_shared.o \
   \
   $(B)/$(BASEGAME)/ui/bg_misc.o \
+  $(B)/$(BASEGAME)/ui/bg_qn_characters.o \
   $(B)/$(BASEGAME)/ui/bg_lib.o \
   \
   $(B)/$(BASEGAME)/qcommon/q_math.o \
