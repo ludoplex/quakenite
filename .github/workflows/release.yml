@@ -1,0 +1,187 @@
+name: Release QuakeNite
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g., v1.0.0)'
+        required: true
+
+jobs:
+  build-linux:
+    name: Linux x86_64
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libsdl2-dev libcurl4-openssl-dev \
+            libopenal-dev libfreetype6-dev libogg-dev libvorbis-dev libopus-dev
+
+      - name: Build MP
+        working-directory: MP
+        run: make -j$(nproc) release
+
+      - name: Package artifacts
+        run: |
+          mkdir -p quakenite-linux-x86_64/main
+          cp MP/build/release-linux-x86_64/iowolfmp.x86_64 quakenite-linux-x86_64/
+          cp MP/build/release-linux-x86_64/iowolfded.x86_64 quakenite-linux-x86_64/
+          cp MP/build/release-linux-x86_64/renderer_mp_*.so quakenite-linux-x86_64/ || true
+          cp MP/build/release-linux-x86_64/main/*.so quakenite-linux-x86_64/main/ || true
+          zip -r quakenite-linux-x86_64.zip quakenite-linux-x86_64/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: quakenite-linux-x86_64-release
+          path: quakenite-linux-x86_64.zip
+
+  build-windows:
+    name: Windows x64
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential mingw-w64 gcc-mingw-w64-x86-64 \
+            g++-mingw-w64-x86-64
+
+      - name: Build MP
+        working-directory: MP
+        run: ./cross-make-mingw64.sh
+
+      - name: Package artifacts
+        run: |
+          mkdir -p quakenite-windows-x64/main
+          cp MP/build/release-mingw32-x86_64/ioWolfMP.x64.exe quakenite-windows-x64/
+          cp MP/build/release-mingw32-x86_64/ioWolfDED.x64.exe quakenite-windows-x64/
+          cp MP/build/release-mingw32-x86_64/*.dll quakenite-windows-x64/ || true
+          cp MP/build/release-mingw32-x86_64/renderer_mp_*.dll quakenite-windows-x64/ || true
+          cp MP/build/release-mingw32-x86_64/main/*.dll quakenite-windows-x64/main/ || true
+          zip -r quakenite-windows-x64.zip quakenite-windows-x64/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: quakenite-windows-x64-release
+          path: quakenite-windows-x64.zip
+
+  build-macos-intel:
+    name: macOS x86_64
+    runs-on: macos-13
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: brew install sdl2
+
+      - name: Build MP
+        working-directory: MP
+        run: ./make-macosx.sh x86_64
+
+      - name: Package artifacts
+        run: |
+          mkdir -p quakenite-macos-x86_64/main
+          cp MP/build/release-darwin-x86_64/iowolfmp.x86_64 quakenite-macos-x86_64/
+          cp MP/build/release-darwin-x86_64/iowolfded.x86_64 quakenite-macos-x86_64/
+          cp MP/build/release-darwin-x86_64/renderer_mp_*.dylib quakenite-macos-x86_64/ || true
+          cp MP/build/release-darwin-x86_64/main/*.dylib quakenite-macos-x86_64/main/ || true
+          zip -r quakenite-macos-x86_64.zip quakenite-macos-x86_64/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: quakenite-macos-x86_64-release
+          path: quakenite-macos-x86_64.zip
+
+  build-macos-arm:
+    name: macOS arm64
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: brew install sdl2
+
+      - name: Build MP
+        working-directory: MP
+        run: ./make-macosx.sh arm64
+
+      - name: Package artifacts
+        run: |
+          mkdir -p quakenite-macos-arm64/main
+          cp MP/build/release-darwin-arm64/iowolfmp.arm64 quakenite-macos-arm64/
+          cp MP/build/release-darwin-arm64/iowolfded.arm64 quakenite-macos-arm64/
+          cp MP/build/release-darwin-arm64/renderer_mp_*.dylib quakenite-macos-arm64/ || true
+          cp MP/build/release-darwin-arm64/main/*.dylib quakenite-macos-arm64/main/ || true
+          zip -r quakenite-macos-arm64.zip quakenite-macos-arm64/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: quakenite-macos-arm64-release
+          path: quakenite-macos-arm64.zip
+
+  create-release:
+    name: Create GitHub Release
+    needs: [build-linux, build-windows, build-macos-intel, build-macos-arm]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+
+      - name: Get tag name
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: QuakeNite ${{ steps.tag.outputs.tag }}
+          draft: false
+          prerelease: ${{ contains(steps.tag.outputs.tag, '-') }}
+          files: |
+            release-artifacts/quakenite-linux-x86_64-release/quakenite-linux-x86_64.zip
+            release-artifacts/quakenite-windows-x64-release/quakenite-windows-x64.zip
+            release-artifacts/quakenite-macos-x86_64-release/quakenite-macos-x86_64.zip
+            release-artifacts/quakenite-macos-arm64-release/quakenite-macos-arm64.zip
+          body: |
+            ## QuakeNite ${{ steps.tag.outputs.tag }}
+
+            ### Downloads
+            - **Linux x86_64**: `quakenite-linux-x86_64.zip`
+            - **Windows x64**: `quakenite-windows-x64.zip`
+            - **macOS Intel**: `quakenite-macos-x86_64.zip`
+            - **macOS Apple Silicon**: `quakenite-macos-arm64.zip`
+
+            ### Contents
+            Each package includes:
+            - Game client (`iowolfmp`)
+            - Dedicated server (`iowolfded`)
+            - Renderer libraries
+            - Game modules (cgame, qagame, ui)
+
+            ### Requirements
+            You need the original RTCW game data files (`pak0.pk3`, etc.) in the `main/` directory.
