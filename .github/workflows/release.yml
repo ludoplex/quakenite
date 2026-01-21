@@ -88,7 +88,7 @@ jobs:
 
       - name: Build MP
         working-directory: MP
-        run: ./make-macosx.sh x86_64
+        run: ARCH=x86_64 MACOSX_VERSION_MIN=10.9 make -j$(sysctl -n hw.ncpu) release
 
       - name: Package artifacts
         run: |
@@ -117,7 +117,7 @@ jobs:
 
       - name: Build MP
         working-directory: MP
-        run: ./make-macosx.sh arm64
+        run: ARCH=arm64 MACOSX_VERSION_MIN=11.0 make -j$(sysctl -n hw.ncpu) release
 
       - name: Package artifacts
         run: |
