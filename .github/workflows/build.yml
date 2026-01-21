@@ -1,0 +1,132 @@
+name: Build QuakeNite
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:
+
+jobs:
+  build-linux:
+    name: Linux x86_64
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libsdl2-dev libcurl4-openssl-dev \
+            libopenal-dev libfreetype6-dev libogg-dev libvorbis-dev libopus-dev
+
+      - name: Build MP
+        working-directory: MP
+        run: make -j$(nproc) release
+
+      - name: Prepare artifacts
+        run: |
+          mkdir -p artifacts/quakenite-linux-x86_64
+          cp MP/build/release-linux-x86_64/iowolfmp.x86_64 artifacts/quakenite-linux-x86_64/
+          cp MP/build/release-linux-x86_64/iowolfded.x86_64 artifacts/quakenite-linux-x86_64/
+          cp MP/build/release-linux-x86_64/renderer_mp_*.so artifacts/quakenite-linux-x86_64/ || true
+          mkdir -p artifacts/quakenite-linux-x86_64/main
+          cp MP/build/release-linux-x86_64/main/*.so artifacts/quakenite-linux-x86_64/main/ || true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: quakenite-linux-x86_64
+          path: artifacts/quakenite-linux-x86_64/
+
+  build-windows:
+    name: Windows x64 (cross-compile)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential mingw-w64 gcc-mingw-w64-x86-64 \
+            g++-mingw-w64-x86-64
+
+      - name: Build MP
+        working-directory: MP
+        run: ./cross-make-mingw64.sh
+
+      - name: Prepare artifacts
+        run: |
+          mkdir -p artifacts/quakenite-windows-x64
+          cp MP/build/release-mingw32-x86_64/ioWolfMP.x64.exe artifacts/quakenite-windows-x64/
+          cp MP/build/release-mingw32-x86_64/ioWolfDED.x64.exe artifacts/quakenite-windows-x64/
+          cp MP/build/release-mingw32-x86_64/*.dll artifacts/quakenite-windows-x64/ || true
+          cp MP/build/release-mingw32-x86_64/renderer_mp_*.dll artifacts/quakenite-windows-x64/ || true
+          mkdir -p artifacts/quakenite-windows-x64/main
+          cp MP/build/release-mingw32-x86_64/main/*.dll artifacts/quakenite-windows-x64/main/ || true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: quakenite-windows-x64
+          path: artifacts/quakenite-windows-x64/
+
+  build-macos-intel:
+    name: macOS x86_64
+    runs-on: macos-15-large
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: brew install sdl2 freetype
+
+      - name: Build MP
+        working-directory: MP
+        run: ARCH=x86_64 MACOSX_VERSION_MIN=10.9 USE_INTERNAL_ZLIB=0 USE_INTERNAL_FREETYPE=0 make -j$(sysctl -n hw.ncpu) release
+
+      - name: Prepare artifacts
+        run: |
+          mkdir -p artifacts/quakenite-macos-x86_64
+          cp MP/build/release-darwin-x86_64/iowolfmp.x86_64 artifacts/quakenite-macos-x86_64/
+          cp MP/build/release-darwin-x86_64/iowolfded.x86_64 artifacts/quakenite-macos-x86_64/
+          cp MP/build/release-darwin-x86_64/renderer_mp_*.dylib artifacts/quakenite-macos-x86_64/ || true
+          mkdir -p artifacts/quakenite-macos-x86_64/main
+          cp MP/build/release-darwin-x86_64/main/*.dylib artifacts/quakenite-macos-x86_64/main/ || true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: quakenite-macos-x86_64
+          path: artifacts/quakenite-macos-x86_64/
+
+  build-macos-arm:
+    name: macOS arm64
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: brew install sdl2 freetype
+
+      - name: Build MP
+        working-directory: MP
+        run: ARCH=arm64 MACOSX_VERSION_MIN=11.0 USE_INTERNAL_ZLIB=0 USE_INTERNAL_FREETYPE=0 make -j$(sysctl -n hw.ncpu) release
+
+      - name: Prepare artifacts
+        run: |
+          mkdir -p artifacts/quakenite-macos-arm64
+          cp MP/build/release-darwin-arm64/iowolfmp.arm64 artifacts/quakenite-macos-arm64/
+          cp MP/build/release-darwin-arm64/iowolfded.arm64 artifacts/quakenite-macos-arm64/
+          cp MP/build/release-darwin-arm64/renderer_mp_*.dylib artifacts/quakenite-macos-arm64/ || true
+          mkdir -p artifacts/quakenite-macos-arm64/main
+          cp MP/build/release-darwin-arm64/main/*.dylib artifacts/quakenite-macos-arm64/main/ || true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: quakenite-macos-arm64
+          path: artifacts/quakenite-macos-arm64/

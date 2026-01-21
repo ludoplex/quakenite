@@ -1383,6 +1383,60 @@ void ClientUserinfoChanged( int clientNum ) {
 	}
 	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
 
+	// QuakeNite character system - read and enforce character selection
+	{
+		int qnCharId;
+		const char *skinName;
+		char qnModelPath[MAX_QPATH];
+		const char *currentModel;
+		const char *currentHead;
+		qboolean needsUpdate;
+
+		// Read qn_char from userinfo, or use server-forced character
+		if ( g_qn_forceCharacter.integer >= 0 && g_qn_forceCharacter.integer < QN_NUM_CHARACTERS ) {
+			// Server is forcing a specific character
+			qnCharId = g_qn_forceCharacter.integer;
+		} else {
+			// Player's choice
+			s = Info_ValueForKey( userinfo, "qn_char" );
+			qnCharId = atoi( s );
+		}
+
+		// Clamp to valid range and store
+		qnCharId = BG_QN_ClampCharacterId( qnCharId );
+		client->sess.qnCharacterId = qnCharId;
+
+		// Determine skin based on team
+		if ( client->sess.sessionTeam == TEAM_RED ) {
+			skinName = "red";
+		} else if ( client->sess.sessionTeam == TEAM_BLUE ) {
+			skinName = "blue";
+		} else {
+			skinName = "default";
+		}
+
+		// Build the model path: "<modelName>/<skinName>"
+		BG_QN_BuildModelPath( qnCharId, skinName, qnModelPath, sizeof( qnModelPath ) );
+
+		// Only update userinfo if model/head actually differ (avoid re-entrancy)
+		currentModel = Info_ValueForKey( userinfo, "model" );
+		currentHead = Info_ValueForKey( userinfo, "head" );
+		needsUpdate = ( Q_stricmp( currentModel, qnModelPath ) != 0 ||
+		                Q_stricmp( currentHead, qnModelPath ) != 0 );
+
+		if ( needsUpdate ) {
+			Info_SetValueForKey( userinfo, "model", qnModelPath );
+			Info_SetValueForKey( userinfo, "head", qnModelPath );
+			trap_SetUserinfo( clientNum, userinfo );
+
+			if ( g_developer.integer ) {
+				G_Printf( "QuakeNite: Client %d (%s) using character %s (%s)\n",
+					clientNum, client->pers.netname,
+					BG_QN_GetCharacterDisplayName( qnCharId ), qnModelPath );
+			}
+		}
+	}
+
 	// set model
 	if ( g_forceModel.integer ) {
 		Q_strncpyz( model, DEFAULT_MODEL, sizeof( model ) );
@@ -1401,18 +1455,25 @@ void ClientUserinfoChanged( int clientNum ) {
 		// To communicate it to cgame
 		client->ps.stats[ STAT_PLAYER_CLASS ] = client->sess.playerType;
 
-		if ( client->sess.sessionTeam == TEAM_BLUE ) {
-			Q_strncpyz( model, MULTIPLAYER_ALLIEDMODEL, MAX_QPATH );
-		} else {
-			Q_strncpyz( model, MULTIPLAYER_AXISMODEL, MAX_QPATH );
+		// QuakeNite: Use character model instead of hardcoded Wolf models
+		// The character system already set model/head in userinfo above,
+		// so we just need to read it back and apply the team skin
+		{
+			const char *skinName;
+			char qnModelPath[MAX_QPATH];
+
+			// Determine skin based on team
+			if ( client->sess.sessionTeam == TEAM_BLUE ) {
+				skinName = "blue";
+			} else {
+				skinName = "red";
+			}
+
+			// Build model path with team skin
+			BG_QN_BuildModelPath( client->sess.qnCharacterId, skinName, qnModelPath, sizeof( qnModelPath ) );
+			Q_strncpyz( model, qnModelPath, MAX_QPATH );
+			Q_strncpyz( head, qnModelPath, MAX_QPATH );
 		}
-
-		Q_strcat( model, MAX_QPATH, "/" );
-
-		SetWolfSkin( client, model );
-
-		Q_strncpyz( head, "", MAX_QPATH );
-		SetWolfSkin( client, head );
 	}
 
 	// strip the skin name

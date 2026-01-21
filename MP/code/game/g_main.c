@@ -164,6 +164,9 @@ vmCvar_t g_dbgRevive;
 
 vmCvar_t g_localTeamPref;
 
+// QuakeNite character system
+vmCvar_t g_qn_forceCharacter;
+
 cvarTable_t gameCvarTable[] = {
 	// don't override the cheat state set by the system
 	{ &g_cheats, "sv_cheats", "", 0, qfalse },
@@ -298,7 +301,11 @@ cvarTable_t gameCvarTable[] = {
 
 	{&g_dbgRevive, "g_dbgRevive", "0", 0, 0, qfalse},
 
-	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse }
+	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse },
+
+	// QuakeNite character system
+	// g_qn_forceCharacter: -1 = player choice, 0-8 = force specific character for all players
+	{ &g_qn_forceCharacter, "g_qn_forceCharacter", "-1", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qtrue }
 };
 
 static int gameCvarTableSize = ARRAY_LEN( gameCvarTable );
