@@ -181,8 +181,11 @@ qboolean G_CanPlaceBuildable( buildType_t type, vec3_t origin, vec3_t angles, ge
 		return qfalse;
 	}
 
-	// Check for overlapping buildables
+	// Check for overlapping buildables using proper AABB intersection
 	for ( i = 0; i < level.num_entities; i++ ) {
+		const buildPieceDef_t *hitDef;
+		vec3_t newMins, newMaxs, hitMins, hitMaxs;
+
 		hit = &g_entities[i];
 		if ( !hit->inuse ) {
 			continue;
@@ -191,11 +194,25 @@ qboolean G_CanPlaceBuildable( buildType_t type, vec3_t origin, vec3_t angles, ge
 			continue;
 		}
 
-		// Simple AABB overlap check
-		if ( fabs( hit->r.currentOrigin[0] - origin[0] ) < 32 &&
-			 fabs( hit->r.currentOrigin[1] - origin[1] ) < 32 &&
-			 fabs( hit->r.currentOrigin[2] - origin[2] ) < 32 ) {
-			return qfalse;
+		// Get bounds for the existing buildable
+		hitDef = G_GetBuildPieceDef( (buildType_t)hit->buildableType );
+		if ( !hitDef ) {
+			continue;
+		}
+
+		// Calculate actual world-space AABB bounds for new piece
+		VectorAdd( origin, def->mins, newMins );
+		VectorAdd( origin, def->maxs, newMaxs );
+
+		// Calculate actual world-space AABB bounds for existing piece
+		VectorAdd( hit->r.currentOrigin, hitDef->mins, hitMins );
+		VectorAdd( hit->r.currentOrigin, hitDef->maxs, hitMaxs );
+
+		// AABB intersection test
+		if ( newMins[0] <= hitMaxs[0] && newMaxs[0] >= hitMins[0] &&
+			 newMins[1] <= hitMaxs[1] && newMaxs[1] >= hitMins[1] &&
+			 newMins[2] <= hitMaxs[2] && newMaxs[2] >= hitMins[2] ) {
+			return qfalse;  // Collision with existing buildable
 		}
 	}
 

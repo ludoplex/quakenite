@@ -9,22 +9,8 @@ Client-side building preview, HUD, and rendering definitions.
 #ifndef CG_BUILDING_H
 #define CG_BUILDING_H
 
-// ============================================================================
-// Building Types (must match server g_building.h)
-// ============================================================================
-#define BUILD_NONE      0
-#define BUILD_WALL      1
-#define BUILD_FLOOR     2
-#define BUILD_RAMP      3
-#define BUILD_ROOF      4
-#define BUILD_NUM_TYPES 5
-
-// ============================================================================
-// Constants
-// ============================================================================
-#define BUILD_GRID_SIZE         64.0f
-#define BUILD_PREVIEW_RANGE     256.0f
-#define STAT_QN_MATERIALS       25
+#include "../game/bg_building.h"  // Shared building types and constants
+// Note: STAT_QN_MATERIALS is defined in bg_public.h
 
 // ============================================================================
 // Client-side Build Preview State

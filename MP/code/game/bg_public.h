@@ -354,7 +354,8 @@ typedef enum {
 	STAT_MAX_HEALTH,                // health / armor limit, changable by handicap
 	STAT_PLAYER_CLASS,              // DHM - Nerve :: player class in multiplayer
 	STAT_CAPTUREHOLD_RED,           // JPW NERVE - red team score
-	STAT_CAPTUREHOLD_BLUE           // JPW NERVE - blue team score
+	STAT_CAPTUREHOLD_BLUE,          // JPW NERVE - blue team score
+	STAT_QN_MATERIALS               // QuakeNite - building materials count
 } statIndex_t;
 
 

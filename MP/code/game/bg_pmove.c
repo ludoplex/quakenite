@@ -66,7 +66,7 @@ float pm_accelerate       = 10;
 float pm_airaccelerate    = 1;
 float pm_wateraccelerate  = 4;
 
-// QuakeNite: Q3-style movement and build synergy cvars
+// QuakeNite: Q3-style movement and build synergy parameters
 float pm_qn_aircontrol    = 150.0f;     // CPM-style air control factor (0 = off, 150 = CPM)
 float pm_qn_rampboost     = 1;          // Enable ramp velocity boost on buildables
 float pm_qn_wallkick      = 1;          // Enable wall kick off buildables
