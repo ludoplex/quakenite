@@ -1,0 +1,637 @@
+================================================================================
+QuakeNite Character Asset Specifications
+================================================================================
+
+This document contains visual descriptions, model notes, and voice line
+specifications for all 9 QuakeNite characters. Use this as a reference
+for creating character models, textures, and voice recordings.
+
+================================================================================
+FILE FORMAT REQUIREMENTS
+================================================================================
+
+Models:     MD3 format, 3 parts: head.md3, upper.md3, lower.md3
+Textures:   TGA format, 256x256 or 512x512
+            - {part}.tga (default)
+            - {part}_red.tga (red team)
+            - {part}_blue.tga (blue team)
+Skins:      Text files mapping surfaces to textures
+            - default.skin, red.skin, blue.skin
+Animations: animation.cfg with standard Q3/RTCW animation indices
+Sounds:     WAV format, 22050Hz mono 16-bit PCM
+            - pain25_1.wav, pain50_1.wav, pain75_1.wav, pain100_1.wav
+            - death1.wav, death2.wav, death3.wav
+            - jump1.wav, falling1.wav
+            - taunt.wav
+
+================================================================================
+
+--------------------------------------------------------------------------------
+1. MISTER CHEF (Master Chief parody)
+--------------------------------------------------------------------------------
+
+VISUAL DESCRIPTION:
+- Green MJOLNIR-style power armor with orange visor
+- Chef hat worn over the helmet (comedic touch)
+- Spatula holstered on hip like a sidearm
+- Armor has subtle cooking-themed engravings
+- Scale: 1.1 (10% larger than standard)
+
+MODEL NOTES:
+- Bulky supersoldier proportions
+- Helmet always on (no face visible)
+- Visor should be reflective/glowing orange
+- Chef hat is separate tag-attached prop
+- Armor segments for upper/lower body
+
+VOICE STYLE:
+- Deep, serious military tone
+- Speaks in cooking metaphors during combat
+- Monotone delivery with occasional dry humor
+
+VOICE LINES:
+
+spawn:
+  - "Time to cook up some chaos."
+  - "Chef reporting for duty."
+  - "The recipe for victory: violence."
+
+frag:
+  - "Order up."
+  - "Well done."
+  - "Another one for the chopping block."
+  - "Served."
+
+death:
+  - "Kitchen's... closed..."
+  - "I'm... overcooked..."
+  - "AAARRGH!"
+
+low_hp:
+  - "Running low on ingredients..."
+  - "Need a health pickup, stat."
+  - "Critical damage sustained."
+
+quad:
+  - "Maximum flavor achieved."
+  - "Power overwhelming the palate."
+
+build:
+  - "Constructing fortification."
+  - "Building deployed."
+  - "Structure online."
+
+taunt:
+  - "Your skills are half-baked."
+  - "I've cooked tougher enemies for breakfast."
+
+telefrag:
+  - "Special delivery."
+
+--------------------------------------------------------------------------------
+2. BLITZ (Battletoads parody)
+--------------------------------------------------------------------------------
+
+VISUAL DESCRIPTION:
+- Muscular anthropomorphic toad, bright green skin
+- Black wraparound sunglasses (never removes them)
+- Sleeveless leather vest with studs
+- Fingerless gloves with metal knuckles
+- Scale: 0.9 (10% smaller, compact build)
+
+MODEL NOTES:
+- Compact but extremely muscular build
+- Oversized fists and forearms
+- Wide mouth with visible teeth when speaking
+- Thick muscular legs for jumping
+- No visible ears
+
+VOICE STYLE:
+- Surfer bro attitude, 90s radical slang
+- Enthusiastic and aggressive
+- Frequent use of "dude", "radical", "gnarly"
+
+VOICE LINES:
+
+spawn:
+  - "Let's get RADICAL!"
+  - "Blitz is in the house!"
+  - "Time to pound some punks!"
+
+frag:
+  - "WICKED!"
+  - "Toad-ally destroyed!"
+  - "Get WRECKED, dude!"
+  - "Gnarly takedown!"
+
+death:
+  - "Bogus..."
+  - "Not... cool... dude..."
+  - "CROOOOAK!"
+
+low_hp:
+  - "Dude, I need health!"
+  - "Getting hammered here!"
+  - "This is NOT tubular!"
+
+quad:
+  - "MEGA RADICAL POWER!"
+  - "Now THIS is what I'm talking about!"
+
+build:
+  - "Building some gnarly cover!"
+  - "Construction time, dude!"
+  - "Fort Blitz, coming up!"
+
+taunt:
+  - "You fight like a tadpole!"
+  - "Ribbit ribbit, loser!"
+
+telefrag:
+  - "SURPRISE, DUDE!"
+
+--------------------------------------------------------------------------------
+3. WILLY LEE (Double Dragon parody)
+--------------------------------------------------------------------------------
+
+VISUAL DESCRIPTION:
+- Red martial arts gi with black trim
+- Spiked black hair, stern expression
+- Dragon tattoo visible on right arm
+- Wrapped fists with hand wraps
+- Scale: 1.0 (standard)
+
+MODEL NOTES:
+- Athletic martial artist build
+- Defined musculature but lean
+- Bare forearms with hand wraps
+- Traditional martial arts pants
+- Barefoot or simple sandals
+
+VOICE STYLE:
+- Street tough with a code of honor
+- Speaks in short, direct sentences
+- Occasional wise proverbs
+- Slight Brooklyn accent
+
+VOICE LINES:
+
+spawn:
+  - "The streets never forget."
+  - "Let's settle this."
+  - "Willy Lee, ready to rumble."
+
+frag:
+  - "Stay down."
+  - "That's street justice."
+  - "You picked the wrong fight."
+  - "Dragon strike!"
+
+death:
+  - "The streets... claim another..."
+  - "I fought... with honor..."
+  - "AAARGH!"
+
+low_hp:
+  - "Just a scratch."
+  - "I've had worse beatings."
+  - "Need to recover."
+
+quad:
+  - "Dragon power surging!"
+  - "Ultimate technique unlocked!"
+
+build:
+  - "Setting up shop."
+  - "Street barricade."
+  - "Cover position."
+
+taunt:
+  - "You fight like you've never seen a real brawl."
+  - "Come back when you've learned to throw a punch."
+
+telefrag:
+  - "Wrong place, wrong time."
+
+--------------------------------------------------------------------------------
+4. STEELHEIM (Stroheim/JoJo parody)
+--------------------------------------------------------------------------------
+
+VISUAL DESCRIPTION:
+- Sci-fi military uniform (silver/gray with gold accents)
+- Visible mechanical/cyborg components on left side
+- Monocle over right eye (glows)
+- Slicked back blonde hair
+- Scale: 1.05 (5% larger, imposing)
+
+MODEL NOTES:
+- Tall imposing figure
+- Left arm is obviously mechanical
+- Chest plate with visible machinery
+- Military boots with metal components
+- Cape or half-cape optional
+
+VOICE STYLE:
+- Boisterous German accent
+- Dramatic declarations, often shouting
+- Extremely proud of "SCIENCE!"
+- Theatrical villain energy
+
+VOICE LINES:
+
+spawn:
+  - "GERMAN SCIENCE IS THE WORLD'S FINEST!"
+  - "Steelheim enters the battlefield!"
+  - "PREPARE FOR TECHNOLOGICAL SUPERIORITY!"
+
+frag:
+  - "SUPERIOR ENGINEERING!"
+  - "PATHETIC!"
+  - "SCIENCE PREVAILS!"
+  - "You are OBSOLETE!"
+
+death:
+  - "IMPOSSIBLE... MY TECHNOLOGY..."
+  - "NEIN... NEIN... NEIN!"
+  - "AAAAAAAHHH!"
+
+low_hp:
+  - "DAMAGE SUSTAINED! UNACCEPTABLE!"
+  - "My systems are failing!"
+  - "REPAIRS REQUIRED!"
+
+quad:
+  - "MAXIMUM POWER ACTIVATED!"
+  - "WITNESS TRUE GERMAN ENGINEERING!"
+
+build:
+  - "CONSTRUCTING FORTIFICATION!"
+  - "SUPERIOR ARCHITECTURE!"
+  - "ENGINEERING EXCELLENCE!"
+
+taunt:
+  - "Your primitive weapons are LAUGHABLE!"
+  - "BOW before SCIENCE!"
+
+telefrag:
+  - "SURPRISE ATTACK! BRILLIANT!"
+
+--------------------------------------------------------------------------------
+5. HOLSTER COLT (Hol Horse/JoJo parody)
+--------------------------------------------------------------------------------
+
+VISUAL DESCRIPTION:
+- Full cowboy outfit: hat, duster coat, boots with spurs
+- Wide-brimmed tan hat with silver band
+- Ornate double gun belt with fancy buckle
+- Toothpick in mouth
+- Scale: 1.0 (standard, lean build)
+
+MODEL NOTES:
+- Lean gunslinger build
+- Flashy accessories (rings, belt buckle)
+- Duster coat flows when moving
+- Cowboy boots with decorative spurs
+- Confident, relaxed pose
+
+VOICE STYLE:
+- Smooth southern drawl
+- Cocky, self-assured attitude
+- Frequently compliments himself
+- Cowardly undertones when losing
+
+VOICE LINES:
+
+spawn:
+  - "The whole horse is here!"
+  - "Fastest finger in the West."
+  - "Time to ride, partner."
+
+frag:
+  - "Draw!"
+  - "Too slow, partner."
+  - "That's a Holster Colt special."
+  - "Bullseye."
+
+death:
+  - "I knew I shoulda... retreated..."
+  - "This ain't... my day..."
+  - "YEEEAARGH!"
+
+low_hp:
+  - "Time for a tactical retreat!"
+  - "Things are gettin' hairy!"
+  - "Need backup here!"
+
+quad:
+  - "Now we're talkin'!"
+  - "Loaded for bear!"
+
+build:
+  - "Building some cover, partner."
+  - "Fort up!"
+  - "Home on the range."
+
+taunt:
+  - "You couldn't hit the broad side of a barn!"
+  - "Run along now, amateur."
+
+telefrag:
+  - "Wrong saloon, partner."
+
+--------------------------------------------------------------------------------
+6. NUMBER SIX (Guido Mista/JoJo parody)
+--------------------------------------------------------------------------------
+
+VISUAL DESCRIPTION:
+- Crop top sweater (purple/blue)
+- Tiger-stripe pattern pants
+- Beanie/knit cap with pins
+- Visible abs/midriff
+- Scale: 1.0 (athletic build)
+
+MODEL NOTES:
+- Athletic Italian fashion model build
+- Expressive face (often worried)
+- Multiple small accessories
+- Casual but stylish clothing
+- Gun holster on hip
+
+VOICE STYLE:
+- Superstitious, paranoid about the number 4
+- Italian-American accent
+- Mood swings between confident and panicked
+- Often mutters about luck
+
+VOICE LINES:
+
+spawn:
+  - "Just don't let me see a four..."
+  - "Six is ready! NOT four, SIX!"
+  - "Lucky number coming through!"
+
+frag:
+  - "That makes... wait, how many is that?"
+  - "Bang bang! NOT four shots!"
+  - "That's what I'm talkin' about!"
+  - "Perfetto!"
+
+death:
+  - "Was that... four bullets...?"
+  - "This is bad luck..."
+  - "MAMMA MIA!"
+
+low_hp:
+  - "This is BAD! Very bad luck!"
+  - "I need healing, quick!"
+  - "Don't let it be four damage!"
+
+quad:
+  - "Now THIS is lucky!"
+  - "Power of SIX!"
+
+build:
+  - "Building cover! Six sides, not four!"
+  - "Construction! Good luck!"
+  - "Safe spot!"
+
+taunt:
+  - "You've got four chances to surrender!"
+  - "My luck is better than yours!"
+
+telefrag:
+  - "THAT was unlucky for you!"
+
+--------------------------------------------------------------------------------
+7. SOLID SERPENT (Metal Gear parody)
+--------------------------------------------------------------------------------
+
+VISUAL DESCRIPTION:
+- Gray/olive tactical sneaking suit
+- Iconic bandana tied around forehead
+- Mullet hairstyle (brown/gray)
+- Utility belt with multiple pouches
+- Scale: 1.0 (athletic infiltrator)
+
+MODEL NOTES:
+- Athletic infiltrator build
+- Tight-fitting tactical suit
+- Multiple utility pouches/gear
+- Combat boots
+- Five o'clock shadow/stubble
+
+VOICE STYLE:
+- Gruff, world-weary soldier
+- Excessive codec/radio references
+- Questions everything philosophically
+- Fond of saying "!?" out loud
+
+VOICE LINES:
+
+spawn:
+  - "Serpent, ready for insertion."
+  - "Kept you waiting, huh?"
+  - "This is a sneaking mission... or not."
+
+frag:
+  - "Target eliminated."
+  - "You're pretty good."
+  - "That's an enemy gunner..."
+  - "Mission complete."
+
+death:
+  - "Colonel... I'm done..."
+  - "This is how... it ends..."
+  - "SERPENT? SERPEEEEENT!"
+
+low_hp:
+  - "Serpent is hit!"
+  - "Need a ration here."
+  - "Taking heavy damage."
+
+quad:
+  - "Power surge active."
+  - "Just like the old days."
+
+build:
+  - "Constructing cardboard... I mean cover."
+  - "Building tactical position."
+  - "Fortification deployed."
+
+taunt:
+  - "You're just a rookie."
+  - "War has changed... or has it?"
+
+telefrag:
+  - "Surprise infiltration."
+
+--------------------------------------------------------------------------------
+8. DUDE BLASTEM (Duke Nukem/Doom parody)
+--------------------------------------------------------------------------------
+
+VISUAL DESCRIPTION:
+- Red tank top, super muscular
+- Military cargo pants with ammo belt
+- Cigar always in mouth
+- Blonde flattop haircut
+- Scale: 1.1 (10% larger, muscular)
+
+MODEL NOTES:
+- Exaggerated muscular build
+- HUGE arms and shoulders
+- Permanent cocky grin
+- Visible ammo belts/grenades
+- Combat boots
+
+VOICE STYLE:
+- Macho one-liners constantly
+- Self-referential humor
+- Speaks in third person sometimes
+- 80s/90s action movie quotes
+
+VOICE LINES:
+
+spawn:
+  - "Time to kick ass and chew bubblegum!"
+  - "Dude Blastem is here to party!"
+  - "Let's ROCK!"
+
+frag:
+  - "BOOM, baby!"
+  - "Hail to the king!"
+  - "That's gotta hurt!"
+  - "Who's next?"
+
+death:
+  - "Nobody kills... Dude Blastem..."
+  - "I'll be... back..."
+  - "AAARRRGGHH!"
+
+low_hp:
+  - "I ain't got time to bleed!"
+  - "Just a flesh wound!"
+  - "Need some health here!"
+
+quad:
+  - "NOW I'M REALLY MAD!"
+  - "MAXIMUM CARNAGE!"
+
+build:
+  - "Building time!"
+  - "Fort Blastem, online!"
+  - "Cover me while I build!"
+
+taunt:
+  - "Your face, your ass - what's the difference?"
+  - "Come get some!"
+
+telefrag:
+  - "SURPRISE! It's DUDE!"
+
+--------------------------------------------------------------------------------
+9. SIR MATTHIAS (Redwall parody)
+--------------------------------------------------------------------------------
+
+VISUAL DESCRIPTION:
+- Medieval mouse knight
+- Green tunic with brown belt
+- The Sword of Martin (iconic longsword)
+- Mouse ears and long tail
+- Scale: 0.85 (15% smaller)
+
+MODEL NOTES:
+- Smaller stature than other characters
+- Mouse features: round ears, long tail, whiskers
+- Medieval adventurer clothing
+- Simple leather armor pieces
+- Noble but humble appearance
+
+VOICE STYLE:
+- Noble British accent
+- Abbey warrior spirit
+- Honorable and brave
+- Occasional woodland references
+
+VOICE LINES:
+
+spawn:
+  - "For Redwall Abbey!"
+  - "The warrior's spirit lives on!"
+  - "Matthias of Redwall, at your service!"
+
+frag:
+  - "For the Abbey!"
+  - "The sword strikes true!"
+  - "Martin guides my blade!"
+  - "Victory!"
+
+death:
+  - "Redwall... remember me..."
+  - "The Abbey... will endure..."
+  - "AIEEE!"
+
+low_hp:
+  - "I am wounded, but not defeated!"
+  - "The fight continues!"
+  - "Need healing, friends!"
+
+quad:
+  - "The spirit of Martin empowers me!"
+  - "For all woodlanders!"
+
+build:
+  - "Constructing defenses!"
+  - "Building fortifications, Abbey style!"
+  - "A wall to protect us all!"
+
+taunt:
+  - "You fight without honor, vermin!"
+  - "Redwall has faced worse than you!"
+
+telefrag:
+  - "The element of surprise!"
+
+================================================================================
+SOUND FILE STRUCTURE PER CHARACTER
+================================================================================
+
+sound/player/{character}/
+  pain25_1.wav      - Light pain grunt
+  pain50_1.wav      - Medium pain grunt
+  pain75_1.wav      - Heavy pain grunt
+  pain100_1.wav     - Critical pain grunt
+  death1.wav        - Death scream 1
+  death2.wav        - Death scream 2
+  death3.wav        - Death scream 3
+  jump1.wav         - Jump effort sound
+  falling1.wav      - Falling/long drop scream
+  gasp.wav          - Surface from water gasp
+  drown.wav         - Drowning sounds
+  taunt.wav         - Taunt voice line
+
+================================================================================
+MODEL FILE STRUCTURE PER CHARACTER
+================================================================================
+
+models/players/{character}/
+  head.md3          - Head mesh
+  upper.md3         - Torso mesh
+  lower.md3         - Legs mesh
+  head.tga          - Head texture (default)
+  head_red.tga      - Head texture (red team)
+  head_blue.tga     - Head texture (blue team)
+  upper.tga         - Torso texture (default)
+  upper_red.tga     - Torso texture (red team)
+  upper_blue.tga    - Torso texture (blue team)
+  lower.tga         - Legs texture (default)
+  lower_red.tga     - Legs texture (red team)
+  lower_blue.tga    - Legs texture (blue team)
+  icon_default.tga  - Selection screen icon
+  default.skin      - Default skin mapping
+  red.skin          - Red team skin mapping
+  blue.skin         - Blue team skin mapping
+  animation.cfg     - Animation configuration
+
+================================================================================
+END OF DOCUMENT
+================================================================================
