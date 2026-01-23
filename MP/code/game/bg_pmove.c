@@ -65,6 +65,12 @@ float pm_slagWadeScale    = 0.70;
 float pm_accelerate       = 10;
 float pm_airaccelerate    = 1;
 float pm_wateraccelerate  = 4;
+
+// QuakeNite: Q3-style movement and build synergy parameters
+float pm_qn_aircontrol    = 150.0f;     // CPM-style air control factor (0 = off, 150 = CPM)
+float pm_qn_rampboost     = 1;          // Enable ramp velocity boost on buildables
+float pm_qn_wallkick      = 1;          // Enable wall kick off buildables
+float pm_qn_rampfriction  = 0.5f;       // Friction multiplier on buildable ramps
 float pm_slagaccelerate   = 2;
 float pm_flyaccelerate    = 8;
 
@@ -252,8 +258,18 @@ static void PM_Friction( void ) {
 		if ( pml.walking && !( pml.groundTrace.surfaceFlags & SURF_SLICK ) ) {
 			// if getting knocked back, no friction
 			if ( !( pm->ps->pm_flags & PMF_TIME_KNOCKBACK ) ) {
+				float frictionMult = 1.0f;
+
+				// QuakeNite: Reduced friction on buildable ramps for slide mechanics
+				if ( pm_qn_rampfriction < 1.0f && pml.groundTrace.entityNum != ENTITYNUM_WORLD ) {
+					float rampAngle = pml.groundTrace.plane.normal[2];
+					if ( rampAngle > 0.5f && rampAngle < 0.95f ) {
+						frictionMult = pm_qn_rampfriction;
+					}
+				}
+
 				control = speed < pm_stopspeed ? pm_stopspeed : speed;
-				drop += control * pm_friction * pml.frametime;
+				drop += control * pm_friction * frictionMult * pml.frametime;
 			}
 		}
 	}
@@ -509,9 +525,11 @@ PM_CheckJump
 */
 static qboolean PM_CheckJump( void ) {
 	// JPW NERVE -- jumping in multiplayer uses and requires sprint juice (to prevent turbo skating, sprint + jumps)
+	// QuakeNite: Reduced jump cooldown for Q3-style bunny hopping (was 850ms, now 100ms)
 	if ( pm->gametype != GT_SINGLE_PLAYER ) {
-		// don't allow jump accel
-		if ( pm->cmd.serverTime - pm->ps->jumpTime < 850 ) {
+		// don't allow jump accel - but with reduced cooldown for strafe jumping
+		int jumpCooldown = 100;  // QuakeNite: 100ms cooldown allows bunny hopping
+		if ( pm->cmd.serverTime - pm->ps->jumpTime < jumpCooldown ) {
 			return qfalse;
 		}
 
@@ -780,6 +798,116 @@ static void PM_FlyMove( void ) {
 
 /*
 ===================
+PM_QN_AirControl
+
+QuakeNite: CPM-style air control - allows turning in air without losing speed
+when pressing forward+strafe simultaneously.
+===================
+*/
+static void PM_QN_AirControl( vec3_t wishdir, float wishspeed ) {
+	float zspeed, speed, dot, k;
+	int i;
+
+	if ( pm_qn_aircontrol <= 0 || !pm->cmd.forwardmove || !wishspeed ) {
+		return;
+	}
+
+	zspeed = pm->ps->velocity[2];
+	pm->ps->velocity[2] = 0;
+	speed = VectorNormalize( pm->ps->velocity );
+
+	dot = DotProduct( pm->ps->velocity, wishdir );
+	k = 32.0f * pm_qn_aircontrol * dot * dot * pml.frametime;
+
+	if ( dot > 0 ) {
+		// Accelerate in wish direction while turning
+		for ( i = 0; i < 2; i++ ) {
+			pm->ps->velocity[i] = pm->ps->velocity[i] * speed + wishdir[i] * k;
+		}
+		VectorNormalize( pm->ps->velocity );
+	}
+
+	for ( i = 0; i < 2; i++ ) {
+		pm->ps->velocity[i] *= speed;
+	}
+	pm->ps->velocity[2] = zspeed;
+}
+
+/*
+===================
+PM_QN_CheckWallKick
+
+QuakeNite: Wall kick mechanic - kick off walls while airborne for direction change.
+Only works on non-world entities (buildables).
+===================
+*/
+static qboolean PM_QN_CheckWallKick( void ) {
+	trace_t tr;
+	vec3_t right, end, kickDir;
+	float kickStrength = 200.0f;
+	float upBoost = 200.0f;
+
+	if ( !pm_qn_wallkick ) {
+		return qfalse;
+	}
+
+	// Must be airborne
+	if ( pm->ps->groundEntityNum != ENTITYNUM_NONE ) {
+		return qfalse;
+	}
+
+	// Must be pressing jump
+	if ( !( pm->cmd.upmove > 0 ) ) {
+		return qfalse;
+	}
+
+	// Must have just pressed jump (not held)
+	if ( pm->ps->pm_flags & PMF_JUMP_HELD ) {
+		return qfalse;
+	}
+
+	// Trace to both sides looking for walls
+	AngleVectors( pm->ps->viewangles, NULL, right, NULL );
+
+	// Check right side
+	VectorMA( pm->ps->origin, 24, right, end );
+	pm->trace( &tr, pm->ps->origin, pm->mins, pm->maxs, end, pm->ps->clientNum, pm->tracemask );
+
+	if ( tr.fraction >= 1.0f ) {
+		// Check left side
+		VectorMA( pm->ps->origin, -24, right, end );
+		pm->trace( &tr, pm->ps->origin, pm->mins, pm->maxs, end, pm->ps->clientNum, pm->tracemask );
+	}
+
+	// Need to hit something that's not world (likely a buildable)
+	if ( tr.fraction >= 1.0f || tr.entityNum == ENTITYNUM_WORLD ) {
+		return qfalse;
+	}
+
+	// Calculate kick direction - reflect velocity off wall and add upward boost
+	PM_ClipVelocity( pm->ps->velocity, tr.plane.normal, kickDir, 1.5f );
+
+	// Scale horizontal component
+	kickDir[0] *= 0.8f;
+	kickDir[1] *= 0.8f;
+
+	// Add upward boost
+	kickDir[2] = upBoost;
+
+	// Apply the kick
+	VectorCopy( kickDir, pm->ps->velocity );
+
+	// Set jump held flag to prevent immediate re-kick
+	pm->ps->pm_flags |= PMF_JUMP_HELD;
+
+	// Play wall kick event
+	PM_AddEvent( EV_JUMP );
+
+	return qtrue;
+}
+
+/*
+===================
 PM_AirMove
 
 ===================
@@ -792,6 +920,13 @@ static void PM_AirMove( void ) {
 	float wishspeed;
 	float scale;
 	usercmd_t cmd;
+
+	// QuakeNite: Check for wall kick first
+	if ( PM_QN_CheckWallKick() ) {
+		PM_StepSlideMove( qtrue );
+		PM_SetMovementDir();
+		return;
+	}
 
 	PM_Friction();
 
@@ -822,6 +957,11 @@ static void PM_AirMove( void ) {
 
 	// not on ground, so little effect on velocity
 	PM_Accelerate( wishdir, wishspeed, pm_airaccelerate );
+
+	// QuakeNite: CPM-style air control for strafe turning
+	if ( pm_qn_aircontrol > 0 ) {
+		PM_QN_AirControl( wishdir, wishspeed );
+	}
 
 	// we may have a ground plane that is very steep, even
 	// though we don't have a groundentity
@@ -991,6 +1131,18 @@ static void PM_WalkMove( void ) {
 	// don't decrease velocity when going up or down a slope
 	VectorNormalize( pm->ps->velocity );
 	VectorScale( pm->ps->velocity, vel, pm->ps->velocity );
+
+	// QuakeNite: Ramp velocity boost on buildables
+	// Check if standing on a non-world entity (likely a buildable) with a ramp angle
+	if ( pm_qn_rampboost && pml.groundTrace.entityNum != ENTITYNUM_WORLD ) {
+		float rampAngle = pml.groundTrace.plane.normal[2];
+		// Ramp angles between 0.5 (60°) and 0.9 (25°) from horizontal
+		if ( rampAngle > 0.5f && rampAngle < 0.9f ) {
+			// Boost based on ramp steepness - steeper ramps give more boost
+			float boost = 1.0f + ( 0.9f - rampAngle ) * 0.75f;
+			VectorScale( pm->ps->velocity, boost, pm->ps->velocity );
+		}
+	}
 
 	PM_StepSlideMove( qfalse );
 

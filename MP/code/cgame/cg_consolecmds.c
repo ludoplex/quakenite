@@ -36,6 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "cg_local.h"
 #include "../ui/ui_shared.h"
+#include "cg_building.h"
 
 
 
@@ -570,6 +571,12 @@ static consoleCommand_t commands[] = {
 
 	// Arnout
 	{ "dumploc", CG_DumpLocation_f },
+
+	// QuakeNite building commands
+	{ "buildmode", CG_BuildMode_f },
+	{ "buildselect", CG_BuildSelect_f },
+	{ "buildrotate", CG_BuildRotate_f },
+	{ "buildplace", CG_BuildPlace_f },
 };
 
 

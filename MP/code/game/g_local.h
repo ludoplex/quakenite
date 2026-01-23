@@ -403,6 +403,10 @@ struct gentity_s {
 	int voiceChatSquelch;                   // DHM - Nerve
 	int voiceChatPreviousTime;              // DHM - Nerve
 	int lastBurnedFrameNumber;              // JPW - Nerve   : to fix FT instant-kill exploit
+
+	// QuakeNite building system
+	int         buildableOwner;             // Client num who built this (-1 if none)
+	int         buildableType;              // Type of buildable structure (buildType_t)
 };
 
 // Ridah
@@ -623,6 +627,14 @@ struct gclient_s {
 	gentity_t       *tempHead;  // Gordon: storing a temporary head for bullet head shot detection
 
 	pmoveExt_t pmext;
+
+	// QuakeNite building system
+	struct {
+		qboolean    active;             // Is build mode on?
+		int         selectedType;       // Currently selected piece (buildType_t)
+		int         rotation;           // 0, 90, 180, 270 degrees
+		int         lastBuildTime;      // Cooldown between placements
+	} buildState;
 };
 
 

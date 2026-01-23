@@ -35,6 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 
 
 #include "cg_local.h"
+#include "cg_building.h"
 
 ///////////////////////
 extern int propellerModel;
@@ -2074,6 +2075,9 @@ static void CG_ProcessEntity( centity_t *cent ) {
 		break;
 	case ET_SMOKER:
 		CG_Smoker( cent );
+		break;
+	case ET_BUILDABLE:
+		CG_Buildable( cent );
 		break;
 	}
 }

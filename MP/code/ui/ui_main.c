@@ -39,6 +39,7 @@ USER INTERFACE MAIN
 */
 
 #include "ui_local.h"
+#include "../game/bg_qn_characters.h"
 
 // NERVE - SMF
 #define AXIS_TEAM       0
@@ -4299,6 +4300,12 @@ void WM_PickItem( int selectionType, int itemIndex ) {
 			trap_Cvar_Set( "ui_weapon", UI_TranslateString( weaponTypes[itemIndex].desc ) );
 		}
 	}
+	// QuakeNite - character selection
+	else if ( selectionType == WM_SELECT_CHARACTER ) {
+		if ( itemIndex >= 0 && itemIndex < QN_NUM_CHARACTERS ) {
+			trap_Cvar_Set( "qn_char", va( "%d", itemIndex ) );
+		}
+	}
 
 	WM_setWeaponPics();
 }
@@ -6027,6 +6034,10 @@ static int UI_FeederCount( float feederID ) {
 		return count;
 	}
 	// -NERVE - SMF
+	// QuakeNite - character selection
+	else if ( feederID == FEEDER_QN_CHARACTERS ) {
+		return QN_NUM_CHARACTERS;
+	}
 	return 0;
 }
 
@@ -6219,6 +6230,12 @@ static const char *UI_FeederItemText( float feederID, int index, int column, qha
 		return uiInfo.spawnPoints[index];
 	}
 	// -NERVE - SMF
+	// QuakeNite - character selection
+	else if ( feederID == FEEDER_QN_CHARACTERS ) {
+		if ( index >= 0 && index < QN_NUM_CHARACTERS ) {
+			return BG_QN_GetCharacterDisplayName( index );
+		}
+	}
 	return "";
 }
 
@@ -6276,6 +6293,13 @@ static qhandle_t UI_FeederItemImage( float feederID, int index ) {
 		}
 	}
 	// -NERVE - SMF
+	// QuakeNite - character icons
+	else if ( feederID == FEEDER_QN_CHARACTERS ) {
+		if ( index >= 0 && index < QN_NUM_CHARACTERS ) {
+			return trap_R_RegisterShaderNoMip( va( "models/players/%s/icon_default",
+				BG_QN_GetCharacterModelName( index ) ) );
+		}
+	}
 
 	return 0;
 }
@@ -6400,6 +6424,12 @@ static void UI_FeederSelection( float feederID, int index ) {
 		}
 	}
 	// -NERVE - SMF
+	// QuakeNite - character selection
+	else if ( feederID == FEEDER_QN_CHARACTERS ) {
+		if ( index >= 0 && index < QN_NUM_CHARACTERS ) {
+			trap_Cvar_Set( "qn_char", va( "%d", index ) );
+		}
+	}
 }
 
 /*

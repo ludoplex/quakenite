@@ -87,6 +87,12 @@ extern float pm_waterfriction;
 extern float pm_slagfriction;
 extern float pm_flightfriction;
 
+// QuakeNite: Q3-style movement and build synergy
+extern float pm_qn_aircontrol;      // CPM-style air control (0 = off, 150 = CPM)
+extern float pm_qn_rampboost;       // Enable ramp velocity boost on buildables
+extern float pm_qn_wallkick;        // Enable wall kick off buildables
+extern float pm_qn_rampfriction;    // Friction multiplier on buildable ramps
+
 //----(SA)	end
 
 extern int c_pmove;
