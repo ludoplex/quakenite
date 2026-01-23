@@ -2544,6 +2544,7 @@ Q3CGOBJ_ = \
   $(B)/$(BASEGAME)/cgame/bg_qn_characters.o \
   $(B)/$(BASEGAME)/cgame/bg_slidemove.o \
   $(B)/$(BASEGAME)/cgame/bg_lib.o \
+  $(B)/$(BASEGAME)/cgame/cg_building.o \
   $(B)/$(BASEGAME)/cgame/cg_consolecmds.o \
   $(B)/$(BASEGAME)/cgame/cg_draw.o \
   $(B)/$(BASEGAME)/cgame/cg_drawtools.o \
@@ -2624,6 +2625,7 @@ Q3GOBJ_ = \
   $(B)/$(BASEGAME)/game/g_alarm.o \
   $(B)/$(BASEGAME)/game/g_antilag.o \
   $(B)/$(BASEGAME)/game/g_bot.o \
+  $(B)/$(BASEGAME)/game/g_building.o \
   $(B)/$(BASEGAME)/game/g_client.o \
   $(B)/$(BASEGAME)/game/g_cmds.o \
   $(B)/$(BASEGAME)/game/g_combat.o \

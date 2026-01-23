@@ -840,6 +840,12 @@ typedef enum {
 	EV_GIVEPAGE,    //----(SA)	added
 	EV_MG42BULLET_HIT_FLESH,    // Arnout: these two send the seed as well
 	EV_MG42BULLET_HIT_WALL,
+
+	// QuakeNite building events
+	EV_BUILD_PLACE,         // Structure placed successfully
+	EV_BUILD_FAIL,          // Cannot place here
+	EV_BUILD_DESTROY,       // Structure destroyed
+
 	EV_MAX_EVENTS   // just added as an 'endcap'
 
 } entity_event_t;
@@ -1332,6 +1338,8 @@ typedef enum {
 	ET_TEMPHEAD,            // Gordon: temporary head for clients for bullet traces
 
 	ET_MG42_BARREL,         // Arnout: MG42 barrel
+
+	ET_BUILDABLE,           // QuakeNite: Player-built structures
 
 	ET_EVENTS               // any of the EV_* events can be added freestanding
 							// by setting eType to ET_EVENTS + eventNum

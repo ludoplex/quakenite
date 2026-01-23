@@ -36,6 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "cg_local.h"
 #include "../ui/ui_shared.h"
+#include "cg_building.h"
 
 displayContextDef_t cgDC;
 
@@ -2345,6 +2346,9 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	CG_SetConfigValues();
 
 	CG_StartMusic();
+
+	// QuakeNite building system initialization
+	CG_InitBuildingSystem();
 
 	cg.lightstylesInited = qfalse;
 

@@ -29,6 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 // cg_view.c -- setup all the parameters (position, angle, etc)
 // for a 3D rendering
 #include "cg_local.h"
+#include "cg_building.h"
 
 //========================
 extern int notebookModel;
@@ -1687,6 +1688,10 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 		DEBUGTIME
 
 		CG_AddLocalEntities();
+
+		// QuakeNite building preview
+		CG_UpdateBuildPreview();
+		CG_DrawBuildPreview();
 
 		DEBUGTIME
 	}

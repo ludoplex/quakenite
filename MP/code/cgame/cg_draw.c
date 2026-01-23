@@ -31,6 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "cg_local.h"
 #include "../ui/ui_shared.h"
+#include "cg_building.h"
 
 //----(SA) added to make it easier to raise/lower our statsubar by only changing one thing
 #define STATUSBARHEIGHT 452
@@ -3830,6 +3831,9 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 		CG_DrawLimboMessage();
 		// -NERVE - SMF
 	}
+
+	// QuakeNite building HUD
+	CG_DrawBuildHUD();
 
 	// Ridah, draw flash blends now
 	CG_DrawFlashBlend();

@@ -27,6 +27,8 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 #include "g_local.h"
+#include "g_building.h"
+
 /*
 ==================
 DeathmatchScoreboardMessage
@@ -2600,6 +2602,16 @@ void ClientCommand( int clientNum ) {
 		Cmd_EntityCount_f( ent );
 	} else if ( Q_stricmp( cmd, "setspawnpt" ) == 0 )  {
 		Cmd_SetSpawnPoint_f( ent );
+	}
+	// QuakeNite building commands
+	else if ( Q_stricmp( cmd, "buildmode" ) == 0 ) {
+		Cmd_BuildMode_f( ent );
+	} else if ( Q_stricmp( cmd, "buildselect" ) == 0 ) {
+		Cmd_BuildSelect_f( ent );
+	} else if ( Q_stricmp( cmd, "buildrotate" ) == 0 ) {
+		Cmd_BuildRotate_f( ent );
+	} else if ( Q_stricmp( cmd, "buildplace" ) == 0 ) {
+		Cmd_BuildPlace_f( ent );
 	} else {
 		trap_SendServerCommand( clientNum, va( "print \"unknown cmd[lof] %s\n\"", cmd ) );
 	}
