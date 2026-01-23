@@ -1,9 +1,24 @@
+# QuakeNite
+
+**QuakeNite** is a fast-paced arena shooter that combines classic **Quake-style movement and gameplay** with **Fortnite-style building mechanics**. Build walls, ramps, and platforms on the fly while bunny-hopping, rocket-jumping, and fragging your opponents in intense multiplayer battles.
+
+QuakeNite is forked from [iortcw](https://github.com/iortcw/iortcw), a community-maintained port of Return to Castle Wolfenstein (RTCW). We've taken the solid foundation of the id Tech 3 engine and enhanced it with real-time building mechanics inspired by Fortnite.
+
+### QuakeNite Features
+
+  * **Fortnite-Style Building** - Construct walls, floors, ramps, and roofs in real-time during combat
+  * **Quake-Style Movement** - Classic bunny-hopping, strafe-jumping, and rocket-jumping mechanics
+  * **Fast-Paced Arena Combat** - Intense multiplayer battles with classic weapon pickups and power-ups
+  * **Build Battles** - Outbuild and outshoot your opponents in vertical combat encounters
+
+---
+
  ![iortcw logo](https://raw.githubusercontent.com/iortcw/iortcw/master/MP/misc/wolf128.png)                       
                                
 
-## iortcw
+## iortcw (Base Engine)
 
-The intent of this project is to provide a baseline RTCW which may be used
+The intent of the original iortcw project is to provide a baseline RTCW which may be used
 for further development and fun. 
 Some of the major features currently implemented are:
 
